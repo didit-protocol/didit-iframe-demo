@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Didit Verification - UniLink</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: #1a1a2e;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem;
+    }
+    .back { width: 100%; color: #64748b; text-decoration: none; font-size: 0.875rem; margin-bottom: 2rem; }
+    .back:hover { color: #fff; }
+    h1 { color: #fff; margin-bottom: 0.5rem; }
+    p { color: #aaa; margin-bottom: 1.5rem; text-align: center; }
+    code { background: #2d2d44; padding: 0.2rem 0.5rem; border-radius: 4px; color: #7dd3fc; }
+    button {
+      background: #2563eb;
+      color: #fff;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      font-size: 1rem;
+      cursor: pointer;
+      margin-bottom: 1.5rem;
+    }
+    button:hover { background: #1d4ed8; }
+
+    /* modal styles - copy these to your project */
+    #didit-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.6);
+      z-index: 9999;
+      justify-content: center;
+      align-items: center;
+      padding: 1rem;
+    }
+    #didit-modal.active { display: flex; }
+    .didit-modal-content {
+      position: relative;
+      width: 100%;
+      max-width: 500px;
+      max-height: 90vh;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    }
+    #didit-iframe {
+      width: 100%;
+      height: 700px;
+      border: none;
+      display: block;
+    }
+    .close-btn {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      width: 24px;
+      height: 24px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      z-index: 10;
+      outline: none;
+    }
+    .close-btn:hover, .close-btn:focus { background: transparent; opacity: 0.5; }
+    .close-btn svg { stroke: #666; stroke-width: 2; stroke-linecap: round; }
+  </style>
+</head>
+<body>
+  <a href="index.html" class="back">← Back</a>
+  <h1>Didit UniLink Demo</h1>
+  <p>Simple integration - no backend required<br>Just use your workflow's UniLink URL directly</p>
+  <button onclick="openDiditModal()">Start Verification</button>
+
+  <!-- modal with iframe - copy this to your project -->
+  <div id="didit-modal">
+    <div class="didit-modal-content">
+      <button class="close-btn" onclick="closeDiditModal()" aria-label="Close">
+        <svg width="14" height="14" viewBox="0 0 14 14">
+          <line x1="1" y1="1" x2="13" y2="13"/>
+          <line x1="13" y1="1" x2="1" y2="13"/>
+        </svg>
+      </button>
+      <iframe
+        id="didit-iframe"
+        allow="camera; microphone; fullscreen; autoplay; encrypted-media"
+      ></iframe>
+    </div>
+  </div>
+
+  <script>
+    // paste your unilink url from the didit console here
+    const UNILINK_URL = 'https://verify.didit.me/u/YOUR_WORKFLOW_ID_BASE64';
+    // open modal
+    function openDiditModal() {
+      document.getElementById('didit-iframe').src = UNILINK_URL;
+      document.getElementById('didit-modal').classList.add('active');
+    }
+
+    // close modal
+    function closeDiditModal() {
+      document.getElementById('didit-modal').classList.remove('active');
+      document.getElementById('didit-iframe').src = '';
+    }
+
+    // close on backdrop click
+    document.getElementById('didit-modal').addEventListener('click', (e) => {
+      if (e.target.id === 'didit-modal') closeDiditModal();
+    });
+  </script>
+</body>
+</html>

@@ -31,7 +31,7 @@ const server = http.createServer((req, res) => {
     return res.end();
   }
 
-  // config endpoint - returns workflow_id to frontend
+  // config endpoint - returns workflow_id for api-session demo
   if (req.url === "/api/config" && req.method === "GET") {
     res.writeHead(200, { "Content-Type": "application/json" });
     res.end(JSON.stringify({ workflow_id: WORKFLOW_ID }));

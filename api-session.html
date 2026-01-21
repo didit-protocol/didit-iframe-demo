@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Didit Verification - API Session</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: #1a1a2e;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem;
+    }
+    .back { width: 100%; color: #64748b; text-decoration: none; font-size: 0.875rem; margin-bottom: 2rem; }
+    .back:hover { color: #fff; }
+    h1 {
+      color: #fff;
+      margin-bottom: 0.5rem;
+    }
+    p {
+      color: #aaa;
+      margin-bottom: 1.5rem;
+    }
+    button {
+      background: #2563eb;
+      color: #fff;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      font-size: 1rem;
+      cursor: pointer;
+      margin-bottom: 1.5rem;
+    }
+    button:hover { background: #1d4ed8; }
+    button:disabled { background: #94a3b8; cursor: not-allowed; }
+    .error { color: #ef4444; margin-bottom: 1rem; }
+
+    #modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.6);
+      z-index: 9999;
+      overflow: auto;
+      justify-content: center;
+      align-items: center;
+      padding: 1rem;
+    }
+    #modal-overlay.active {
+      display: flex;
+    }
+    .modal-content {
+      position: relative;
+      width: 100%;
+      max-width: 500px;
+      max-height: 90vh;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    }
+    .close-btn {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      width: 24px;
+      height: 24px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      z-index: 10;
+      outline: none;
+    }
+    .close-btn:hover, .close-btn:focus { background: transparent; opacity: 0.5; }
+    .close-btn svg { stroke: #666; stroke-width: 2; stroke-linecap: round; }
+    iframe {
+      width: 100%;
+      height: 700px;
+      border: none;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <a href="index.html" class="back">← Back</a>
+  <h1>Didit API Session Demo</h1>
+  <p>Creates a new session via API (requires backend)</p>
+  <div id="error" class="error"></div>
+  <button id="create-btn" onclick="createSession()">Create Session</button>
+
+  <div id="modal-overlay" class="modal-overlay">
+    <div class="modal-content">
+      <button class="close-btn" onclick="closeModal()" aria-label="Close">
+        <svg width="14" height="14" viewBox="0 0 14 14">
+          <line x1="1" y1="1" x2="13" y2="13"/>
+          <line x1="13" y1="1" x2="1" y2="13"/>
+        </svg>
+      </button>
+      <iframe
+        id="verification-iframe"
+        allow="camera; microphone; fullscreen; autoplay; encrypted-media"
+      ></iframe>
+    </div>
+  </div>
+
+  <script>
+    let config = {};
+
+    // load config from server on page load
+    async function loadConfig() {
+      try {
+        const res = await fetch('/api/config');
+        if (res.ok) config = await res.json();
+      } catch (err) {
+        console.error('Failed to load config:', err);
+      }
+    }
+    loadConfig();
+
+    function closeModal() {
+      document.getElementById('modal-overlay').classList.remove('active');
+      document.getElementById('verification-iframe').src = '';
+      document.getElementById('create-btn').disabled = false;
+      document.getElementById('create-btn').textContent = 'Create Session';
+    }
+
+    async function createSession() {
+      const btn = document.getElementById('create-btn');
+      const errorDiv = document.getElementById('error');
+      errorDiv.textContent = '';
+      btn.disabled = true;
+      btn.textContent = 'Creating...';
+
+      try {
+        const res = await fetch('/api/session', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ workflow_id: config.workflow_id })
+        });
+
+        if (!res.ok) throw new Error(`API error: ${res.status}`);
+        
+        const data = await res.json();
+        const url = data.url
+        document.getElementById('verification-iframe').src = url;
+        document.getElementById('modal-overlay').classList.add('active');
+        btn.textContent = 'Session Created';
+      } catch (err) {
+        errorDiv.textContent = err.message;
+        btn.disabled = false;
+        btn.textContent = 'Create Session';
+      }
+    }
+  </script>
+</body>
+</html>
