@@ -36,6 +36,8 @@ The callback url will be the one you have in the workflow settings (in case you 
 2. Go to the workflow you want and click on → **Copy Link**
 3. You will have copied the unilink URL (format: `https://verify.didit.me/u/{workflow_id_base64}`)
 
+<img src="_readme/images/copy-link.gif" alt="Copy Link" width="400">
+
 ### Setup
 
 1. Open `unilink.html`
