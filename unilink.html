@@ -159,6 +159,63 @@
         transform: rotate(360deg);
       }
     }
+
+    .confirm-overlay {
+      display: none;
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 20;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .confirm-overlay.active {
+      display: flex;
+    }
+
+    .confirm-box {
+      background: #fff;
+      border-radius: 12px;
+      padding: 1.5rem;
+      text-align: center;
+      max-width: 280px;
+    }
+
+    .confirm-box h3 {
+      color: #1a1a2e;
+      margin-bottom: 0.5rem;
+      font-size: 1.1rem;
+    }
+
+    .confirm-box p {
+      color: #666;
+      font-size: 0.875rem;
+      margin-bottom: 1rem;
+    }
+
+    .confirm-actions {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+    }
+
+    .confirm-actions button {
+      margin: 0;
+      padding: 0.5rem 1rem;
+      font-size: 0.875rem;
+    }
+
+    .confirm-actions span {
+      color: #666;
+      font-size: 0.875rem;
+      cursor: pointer;
+    }
+
+    .confirm-actions span:hover {
+      color: #1a1a2e;
+    }
   </style>
 </head>
 
@@ -182,7 +239,17 @@
         </svg>
       </button>
       <iframe id="didit-iframe" allow="camera; microphone; fullscreen; autoplay; encrypted-media"
-        onload="document.getElementById('loading').style.display='none'"></iframe>
+        onload="if(this.src) document.getElementById('loading').style.display='none'"></iframe>
+      <div class="confirm-overlay" id="confirm-overlay">
+        <div class="confirm-box">
+          <h3>Exit verification?</h3>
+          <p>Exiting will end your verification process. Are you sure?</p>
+          <div class="confirm-actions">
+            <button type="button" onclick="hideConfirm()">Continue</button>
+            <span onclick="confirmExit()">Exit</span>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -196,16 +263,19 @@
       document.getElementById('didit-modal').classList.add('active');
     }
 
-    // close modal
     function closeDiditModal() {
-      document.getElementById('didit-modal').classList.remove('active');
-      document.getElementById('didit-iframe').src = '';
+      document.getElementById('confirm-overlay').classList.add('active');
     }
 
-    // close on backdrop click
-    document.getElementById('didit-modal').addEventListener('click', (e) => {
-      if (e.target.id === 'didit-modal') closeDiditModal();
-    });
+    function hideConfirm() {
+      document.getElementById('confirm-overlay').classList.remove('active');
+    }
+
+    function confirmExit() {
+      document.getElementById('confirm-overlay').classList.remove('active');
+      document.getElementById('didit-modal').classList.remove('active');
+      document.getElementById('didit-iframe').src = 'about:blank';
+    }
   </script>
 </body>
 

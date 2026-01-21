@@ -155,6 +155,63 @@
       }
     }
 
+    .confirm-overlay {
+      display: none;
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 20;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .confirm-overlay.active {
+      display: flex;
+    }
+
+    .confirm-box {
+      background: #fff;
+      border-radius: 12px;
+      padding: 1.5rem;
+      text-align: center;
+      max-width: 280px;
+    }
+
+    .confirm-box h3 {
+      color: #1a1a2e;
+      margin-bottom: 0.5rem;
+      font-size: 1.1rem;
+    }
+
+    .confirm-box p {
+      color: #666;
+      font-size: 0.875rem;
+      margin-bottom: 1rem;
+    }
+
+    .confirm-actions {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+    }
+
+    .confirm-actions button {
+      margin: 0;
+      padding: 0.5rem 1rem;
+      font-size: 0.875rem;
+    }
+
+    .confirm-actions span {
+      color: #666;
+      font-size: 0.875rem;
+      cursor: pointer;
+    }
+
+    .confirm-actions span:hover {
+      color: #1a1a2e;
+    }
+
     iframe {
       width: 100%;
       height: 700px;
@@ -184,7 +241,17 @@
         </svg>
       </button>
       <iframe id="verification-iframe" allow="camera; microphone; fullscreen; autoplay; encrypted-media"
-        onload="document.getElementById('loading').style.display='none'"></iframe>
+        onload="if(this.src) document.getElementById('loading').style.display='none'"></iframe>
+      <div class="confirm-overlay" id="confirm-overlay">
+        <div class="confirm-box">
+          <h3>Exit verification?</h3>
+          <p>Exiting will end your verification process. Are you sure?</p>
+          <div class="confirm-actions">
+            <button type="button" onclick="hideConfirm()">Continue</button>
+            <span onclick="confirmExit()">Exit</span>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -203,8 +270,17 @@
     loadConfig();
 
     function closeModal() {
+      document.getElementById('confirm-overlay').classList.add('active');
+    }
+
+    function hideConfirm() {
+      document.getElementById('confirm-overlay').classList.remove('active');
+    }
+
+    function confirmExit() {
+      document.getElementById('confirm-overlay').classList.remove('active');
       document.getElementById('modal-overlay').classList.remove('active');
-      document.getElementById('verification-iframe').src = '';
+      document.getElementById('verification-iframe').src = 'about:blank';
       document.getElementById('create-btn').disabled = false;
       document.getElementById('create-btn').textContent = 'Create Session';
     }
