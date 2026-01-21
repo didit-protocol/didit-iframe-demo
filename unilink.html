@@ -1,11 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Didit Verification - UniLink</title>
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
     body {
       font-family: system-ui, -apple-system, sans-serif;
       background: #1a1a2e;
@@ -15,11 +21,37 @@
       align-items: center;
       padding: 2rem;
     }
-    .back { width: 100%; color: #64748b; text-decoration: none; font-size: 0.875rem; margin-bottom: 2rem; }
-    .back:hover { color: #fff; }
-    h1 { color: #fff; margin-bottom: 0.5rem; }
-    p { color: #aaa; margin-bottom: 1.5rem; text-align: center; }
-    code { background: #2d2d44; padding: 0.2rem 0.5rem; border-radius: 4px; color: #7dd3fc; }
+
+    .back {
+      width: 100%;
+      color: #64748b;
+      text-decoration: none;
+      font-size: 0.875rem;
+      margin-bottom: 2rem;
+    }
+
+    .back:hover {
+      color: #fff;
+    }
+
+    h1 {
+      color: #fff;
+      margin-bottom: 0.5rem;
+    }
+
+    p {
+      color: #aaa;
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+
+    code {
+      background: #2d2d44;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      color: #7dd3fc;
+    }
+
     button {
       background: #2563eb;
       color: #fff;
@@ -30,7 +62,10 @@
       cursor: pointer;
       margin-bottom: 1.5rem;
     }
-    button:hover { background: #1d4ed8; }
+
+    button:hover {
+      background: #1d4ed8;
+    }
 
     /* modal styles - copy these to your project */
     #didit-modal {
@@ -43,7 +78,11 @@
       align-items: center;
       padding: 1rem;
     }
-    #didit-modal.active { display: flex; }
+
+    #didit-modal.active {
+      display: flex;
+    }
+
     .didit-modal-content {
       position: relative;
       width: 100%;
@@ -51,14 +90,16 @@
       max-height: 90vh;
       border-radius: 16px;
       overflow: hidden;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
     }
+
     #didit-iframe {
       width: 100%;
       height: 700px;
       border: none;
       display: block;
     }
+
     .close-btn {
       position: absolute;
       top: 12px;
@@ -72,10 +113,55 @@
       z-index: 10;
       outline: none;
     }
-    .close-btn:hover, .close-btn:focus { background: transparent; opacity: 0.5; }
-    .close-btn svg { stroke: #666; stroke-width: 2; stroke-linecap: round; }
+
+    .close-btn:hover,
+    .close-btn:focus {
+      background: transparent;
+      opacity: 0.5;
+    }
+
+    .close-btn svg {
+      stroke: #666;
+      stroke-width: 2;
+      stroke-linecap: round;
+    }
+
+    .loading {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #fafafa;
+    }
+
+    .loading svg {
+      width: 64px;
+      height: 64px;
+      animation: spin 1s linear infinite;
+    }
+
+    .loading circle {
+      stroke: #a3a3a3;
+      opacity: 0.2;
+    }
+
+    .loading path {
+      stroke: #525252;
+    }
+
+    @keyframes spin {
+      from {
+        transform: rotate(0deg);
+      }
+
+      to {
+        transform: rotate(360deg);
+      }
+    }
   </style>
 </head>
+
 <body>
   <a href="index.html" class="back">← Back</a>
   <h1>Didit UniLink Demo</h1>
@@ -85,16 +171,18 @@
   <!-- modal with iframe - copy this to your project -->
   <div id="didit-modal">
     <div class="didit-modal-content">
+      <div class="loading" id="loading"><svg viewBox="0 0 24 24" fill="none">
+          <circle cx="12" cy="12" r="10" stroke-width="2.5" />
+          <path d="M12 2a10 10 0 0 1 10 10" stroke-width="2.5" stroke-linecap="round" />
+        </svg></div>
       <button class="close-btn" onclick="closeDiditModal()" aria-label="Close">
         <svg width="14" height="14" viewBox="0 0 14 14">
-          <line x1="1" y1="1" x2="13" y2="13"/>
-          <line x1="13" y1="1" x2="1" y2="13"/>
+          <line x1="1" y1="1" x2="13" y2="13" />
+          <line x1="13" y1="1" x2="1" y2="13" />
         </svg>
       </button>
-      <iframe
-        id="didit-iframe"
-        allow="camera; microphone; fullscreen; autoplay; encrypted-media"
-      ></iframe>
+      <iframe id="didit-iframe" allow="camera; microphone; fullscreen; autoplay; encrypted-media"
+        onload="document.getElementById('loading').style.display='none'"></iframe>
     </div>
   </div>
 
@@ -103,6 +191,7 @@
     const UNILINK_URL = 'https://verify.didit.me/u/YOUR_WORKFLOW_ID_BASE64';
     // open modal
     function openDiditModal() {
+      document.getElementById('loading').style.display = 'flex';
       document.getElementById('didit-iframe').src = UNILINK_URL;
       document.getElementById('didit-modal').classList.add('active');
     }
@@ -119,4 +208,5 @@
     });
   </script>
 </body>
+
 </html>
